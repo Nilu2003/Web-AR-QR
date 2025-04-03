@@ -27,6 +27,6 @@ connectDB()
 
 
 // inside .env file
-// MONGODB_URI=mongodb+srv://niluprusty98:Nilu2003@cluster0.ax7pl.mongodb.net //your database
+// MONGODB_URI= //your database
 // PORT=8000
-// CORS_ORIGIN=http://localhost:5173
+// CORS_ORIGIN=http://localhost:5173  //frontend 
