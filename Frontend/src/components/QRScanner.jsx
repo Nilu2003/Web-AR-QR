@@ -1,26 +1,31 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { QrReader } from "react-qr-reader";
+import React, { useEffect } from "react";
+import { Html5QrcodeScanner, Html5QrcodeScanType } from "html5-qrcode";
 
-const QRScanner = () => {
-    const navigate = useNavigate();
+const QRScanner = ({ onScan }) => {
+    useEffect(() => {
+        const scanner = new Html5QrcodeScanner("reader", {
+            fps: 10,
+            qrbox: { width: 300, height: 300 }, 
+            aspectRatio: 1.0,
+            supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+            videoConstraints: { facingMode: "environment" }, 
+        });
 
-    const handleScan = (data) => {
-        if (data) {
-            navigate(`/ar/${encodeURIComponent(data)}`);
-        }
-    };
+        scanner.render(
+            (decodedText) => {
+                console.log(" QR Code detected:", decodedText);
+                onScan(decodedText);
+                scanner.clear();
+            },
+            (errorMessage) => {
+                console.warn(" QR Code scan error:", errorMessage);
+            }
+        );
 
-    return (
-        <QrReader
-            delay={300}
-            onResult={(result, error) => {
-                if (result) handleScan(result.text);
-                if (error) console.error(error);
-            }}
-            style={{ width: "100%" }}
-        />
-    );
+        return () => scanner.clear();
+    }, [onScan]);
+
+    return <div id="reader"></div>;
 };
 
 export default QRScanner;
